@@ -1,12 +1,24 @@
 import "./App.css";
 import Die from "./Die";
-import { useState } from "react";
+import React, { useState } from "react";
 import { nanoid } from "nanoid";
+import Confetti from "react-confetti";
 
 function App() {
-  //create max 10 random numbers
-
   const [dice, setDice] = useState(rollDice());
+  const [tenzies, setTenzies] = useState(false);
+  console.log(tenzies);
+
+  React.useEffect(() => {
+    const allHeld = dice.every((die) => die.isHeld);
+    const firstValue = dice[0].value;
+    const allSameValue = dice.every((die) => die.value === firstValue);
+
+    if (allHeld && allSameValue) {
+      setTenzies(true);
+      <Confetti />;
+    }
+  }, [dice]);
 
   function rollDice() {
     const newDice = [];
@@ -24,13 +36,17 @@ function App() {
     };
   }
 
-  //button to roll dice
   function handleClick() {
-    setDice((oldDice) =>
-      oldDice.map((die) => {
-        return die.isHeld ? die : generateNewDie();
-      })
-    );
+    if (!tenzies) {
+      setDice((oldDice) =>
+        oldDice.map((die) => {
+          return die.isHeld ? die : generateNewDie();
+        })
+      );
+    } else {
+      setDice(rollDice());
+      setTenzies(false);
+    }
   }
 
   function holdDie(id) {
@@ -49,14 +65,33 @@ function App() {
     />
   ));
 
+  function resetGame() {
+    setDice(rollDice());
+    setTenzies(false);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
         <main className="container">
+          <h1 className="title">Tenzies</h1>
+          <p className="instructions">
+            Roll until all dice are the same. Click each die to freeze it at its
+            current value between rolls.
+          </p>
+          {tenzies && <Confetti />}
           <div className="die-container">{diceElements}</div>
-          <button onClick={handleClick} className="roll-dice">
-            Roll dice
-          </button>
+          <div className="buttons">
+            {tenzies ? (
+              <button onClick={resetGame} className="button-54">
+                Reset Game
+              </button>
+            ) : (
+              <button onClick={handleClick} className="button">
+                Roll dice
+              </button>
+            )}
+          </div>
         </main>
       </header>
     </div>
