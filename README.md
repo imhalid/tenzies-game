@@ -1,3 +1,3 @@
-# Getting Started with Create React App
+# Tenzies-Game
 
-This project was bootstrapped with [Create React App](https://tenzies-game-opal.vercel.app/).
+ [Open](https://tenzies-game-opal.vercel.app/).
